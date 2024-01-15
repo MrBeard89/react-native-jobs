@@ -7,8 +7,12 @@ import { COLORS, SIZES } from '../../../constants'
 
 import PopularJobCard from '../../common/cards/popular/PopularJobCard'
 
+//Custom hook fetch
+import useFetch from '../../../hook/useFetch'
+
 const Popularjobs = () => {
   const router = useRouter()
+  const { data, isLoading, error } = useFetch('search', { query: 'React Developer', num_pages: 1 })
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -16,6 +20,22 @@ const Popularjobs = () => {
         <TouchableOpacity>
           <Text style={styles.headerBtn}>Show All</Text>
         </TouchableOpacity>
+      </View>
+
+      <View>
+        {isLoading ? (
+          <ActivityIndicator size='large' />
+        ) : error ? (
+          <Text>Something went wrong</Text>
+        ) : (
+          <FlatList
+            data={data}
+            renderItem={({ item }) => <PopularJobCard item={item} />}
+            keyExtractor={(item) => item?.job_id}
+            contentContainerStyle={{ columnGap: SIZES.medium }}
+            horizontal
+          />
+        )}
       </View>
     </View>
   )
